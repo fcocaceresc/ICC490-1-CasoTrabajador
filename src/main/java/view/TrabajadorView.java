@@ -30,7 +30,7 @@ public class TrabajadorView extends JFrame {
 
         panel.add(trabajadorScrollPane, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 1));
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
         JButton addTrabajadorButton = new JButton("Agregar trabajador");
@@ -40,6 +40,10 @@ public class TrabajadorView extends JFrame {
         JButton updateTrabajadorButton = new JButton("Actualizar trabajador");
         updateTrabajadorButton.addActionListener(e -> showUpdateTrabajadorDialog());
         buttonPanel.add(updateTrabajadorButton);
+
+        JButton deleteTrabajadorButton = new JButton("Eliminar trabajador");
+        deleteTrabajadorButton.addActionListener(e -> showDeleteTrabajadorDialog());
+        buttonPanel.add(deleteTrabajadorButton);
 
         add(panel);
     }
@@ -136,6 +140,29 @@ public class TrabajadorView extends JFrame {
 
             try {
                 trabajadorController.actualizarTrabajador(id, nombre, apellido, rut, isapre, afp);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            loadTrabajadorTable();
+        }
+    }
+
+    private void showDeleteTrabajadorDialog() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2));
+
+        JLabel idTrabajadorLabel = new JLabel("ID:");
+        panel.add(idTrabajadorLabel);
+        JTextField idTrabajadorField = new JTextField();
+        panel.add(idTrabajadorField);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Eliminar trabajador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            long id = Long.parseLong(idTrabajadorField.getText());
+
+            try {
+                trabajadorController.eliminarTrabajador(id);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
