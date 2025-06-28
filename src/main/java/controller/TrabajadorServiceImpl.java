@@ -2,7 +2,7 @@ package controller;
 
 import model.Trabajador;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class TrabajadorServiceImpl implements TrabajadorService {
     private final TrabajadorRepository trabajadorRepository;
@@ -18,33 +18,37 @@ public class TrabajadorServiceImpl implements TrabajadorService {
     }
 
     @Override
-    public Trabajador obtenerTrabajador(int id) {
+    public Trabajador obtenerTrabajador(long id) {
         validarId(id);
         return trabajadorRepository.obtenerTrabajador(id);
     }
 
     @Override
-    public HashMap<Integer, Trabajador> obtenerTrabajadores() {
+    public ArrayList<Trabajador> obtenerTrabajadores() {
         return trabajadorRepository.obtenerTrabajadores();
     }
 
     @Override
-    public void actualizarTrabajador(int id, Trabajador trabajador) {
+    public void actualizarTrabajador(long id, Trabajador trabajador) {
         validarId(id);
         validarTrabajador(trabajador);
         trabajadorRepository.actualizarTrabajador(id, trabajador);
     }
 
     @Override
-    public void eliminarTrabajador(int id) {
+    public void eliminarTrabajador(long id) {
         validarId(id);
         trabajadorRepository.eliminarTrabajador(id);
     }
 
-    private void validarId(int id) {
-        if (!trabajadorRepository.obtenerTrabajadores().containsKey(id)) {
-            throw new IllegalArgumentException("El trabajador no existe");
+    private void validarId(long id) {
+        ArrayList<Trabajador> trabajadores = obtenerTrabajadores();
+        for (Trabajador trabajador : trabajadores) {
+            if (trabajador.getId() == id) {
+                return;
+            }
         }
+        throw new IllegalArgumentException("El trabajador no existe");
     }
 
     private void validarTrabajador(Trabajador trabajador) {

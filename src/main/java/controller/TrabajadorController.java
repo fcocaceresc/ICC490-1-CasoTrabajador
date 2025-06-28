@@ -2,7 +2,7 @@ package controller;
 
 import model.Trabajador;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class TrabajadorController {
     private TrabajadorService trabajadorService;
@@ -16,20 +16,20 @@ public class TrabajadorController {
         trabajadorService.crearTrabajador(trabajador);
     }
 
-    public Trabajador obtenerTrabajador(int id) {
+    public Trabajador obtenerTrabajador(long id) {
         return trabajadorService.obtenerTrabajador(id);
     }
 
-    public HashMap<Integer, Trabajador> obtenerTrabajadores() {
+    public ArrayList<Trabajador> obtenerTrabajadores() {
         return trabajadorService.obtenerTrabajadores();
     }
 
-    public void actualizarTrabajador(int id, String nombre, String apellido, String rut, String isapre, String afp) {
+    public void actualizarTrabajador(long id, String nombre, String apellido, String rut, String isapre, String afp) {
         Trabajador trabajador = new Trabajador(nombre, apellido, rut, isapre, afp);
         trabajadorService.actualizarTrabajador(id, trabajador);
     }
 
-    public void eliminarTrabajador(int id) {
+    public void eliminarTrabajador(long id) {
         trabajadorService.eliminarTrabajador(id);
     }
 }

@@ -1,137 +1,178 @@
 package view;
 
 import controller.TrabajadorController;
+import model.AFP;
+import model.Isapre;
 import model.Trabajador;
+import model.TrabajadorTableModel;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
-public class TrabajadorView {
-    private final Scanner scanner = new Scanner(System.in);
+public class TrabajadorView extends JFrame {
+    private final TrabajadorTableModel trabajadorTableModel;
     private final TrabajadorController trabajadorController;
 
     public TrabajadorView(TrabajadorController trabajadorController) {
         this.trabajadorController = trabajadorController;
+
+        setTitle("Dashboard");
+        setSize(1280, 720);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        trabajadorTableModel = new TrabajadorTableModel();
+        JTable trabajadorTable = new JTable(trabajadorTableModel);
+        JScrollPane trabajadorScrollPane = new JScrollPane(trabajadorTable);
+
+        panel.add(trabajadorScrollPane, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        JButton addTrabajadorButton = new JButton("Agregar trabajador");
+        addTrabajadorButton.addActionListener(e -> showAddTrabajadorDialog());
+        buttonPanel.add(addTrabajadorButton);
+
+        JButton updateTrabajadorButton = new JButton("Actualizar trabajador");
+        updateTrabajadorButton.addActionListener(e -> showUpdateTrabajadorDialog());
+        buttonPanel.add(updateTrabajadorButton);
+
+        JButton deleteTrabajadorButton = new JButton("Eliminar trabajador");
+        deleteTrabajadorButton.addActionListener(e -> showDeleteTrabajadorDialog());
+        buttonPanel.add(deleteTrabajadorButton);
+
+        add(panel);
     }
 
-    public void menu() {
-        boolean continuar = true;
-        while (continuar) {
-            mostrarMenu();
-            String opcion = scanner.nextLine();
-            continuar = ejecutarOpcion(opcion);
+    private void showAddTrabajadorDialog() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5, 2));
+
+        JLabel nombreTrabajadorLabel = new JLabel("Nombre:");
+        panel.add(nombreTrabajadorLabel);
+        JTextField nombreTrabajadorField = new JTextField();
+        panel.add(nombreTrabajadorField);
+
+        JLabel apellidoTrabajadorLabel = new JLabel("Apellido:");
+        panel.add(apellidoTrabajadorLabel);
+        JTextField apellidoTrabajadorField = new JTextField();
+        panel.add(apellidoTrabajadorField);
+
+        JLabel rutTrabajadorLabel = new JLabel("Rut:");
+        panel.add(rutTrabajadorLabel);
+        JTextField rutTrabajadorField = new JTextField();
+        panel.add(rutTrabajadorField);
+
+        JLabel isapreTrabajadorLabel = new JLabel("Isapre:");
+        panel.add(isapreTrabajadorLabel);
+        JComboBox<Isapre> trabajadorIsapreComboBox = new JComboBox<>(Isapre.values());
+        panel.add(trabajadorIsapreComboBox);
+
+        JLabel afpTrabajadorLabel = new JLabel("Afp:");
+        panel.add(afpTrabajadorLabel);
+        JComboBox<AFP> afpTrabajadorComboBox = new JComboBox<>(AFP.values());
+        panel.add(afpTrabajadorComboBox);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Agregar trabajador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            String nombre = nombreTrabajadorField.getText();
+            String apellido = apellidoTrabajadorField.getText();
+            String rut = rutTrabajadorField.getText();
+            String isapre = ((Isapre) trabajadorIsapreComboBox.getSelectedItem()).name();
+            String afp = ((AFP) afpTrabajadorComboBox.getSelectedItem()).name();
+
+            try {
+                trabajadorController.crearTrabajador(nombre, apellido, rut, isapre, afp);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            loadTrabajadorTable();
         }
     }
 
-    private void mostrarMenu() {
-        System.out.println("1. Crear trabajador");
-        System.out.println("2. Obtener trabajador por ID");
-        System.out.println("3. Obtener trabajadores");
-        System.out.println("4. Actualizar trabajador");
-        System.out.println("5. Eliminar trabajador");
-        System.out.println("6. Salir");
-    }
+    private void showUpdateTrabajadorDialog() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 2));
 
-    private boolean ejecutarOpcion(String opcion) {
-        switch (opcion) {
-            case "1":
-                crearTrabajador();
-                return true;
-            case "2":
-                obtenerTrabajadorPorId();
-                return true;
-            case "3":
-                obtenerTrabajadores();
-                return true;
-            case "4":
-                actualizarTrabajador();
-                return true;
-            case "5":
-                eliminarTrabajador();
-                return true;
-            case "6":
-                return false;
-            default:
-                System.out.println("Opción inválida");
-                return true;
+        JLabel idTrabajadorLabel = new JLabel("ID:");
+        panel.add(idTrabajadorLabel);
+        JTextField idTrabajadorField = new JTextField();
+        panel.add(idTrabajadorField);
+
+        JLabel nombreTrabajadorLabel = new JLabel("Nombre:");
+        panel.add(nombreTrabajadorLabel);
+        JTextField nombreTrabajadorField = new JTextField();
+        panel.add(nombreTrabajadorField);
+
+        JLabel apellidoTrabajadorLabel = new JLabel("Apellido:");
+        panel.add(apellidoTrabajadorLabel);
+        JTextField apellidoTrabajadorField = new JTextField();
+        panel.add(apellidoTrabajadorField);
+
+        JLabel rutTrabajadorLabel = new JLabel("Rut:");
+        panel.add(rutTrabajadorLabel);
+        JTextField rutTrabajadorField = new JTextField();
+        panel.add(rutTrabajadorField);
+
+        JLabel isapreTrabajadorLabel = new JLabel("Isapre:");
+        panel.add(isapreTrabajadorLabel);
+        JComboBox<Isapre> trabajadorIsapreComboBox = new JComboBox<>(Isapre.values());
+        panel.add(trabajadorIsapreComboBox);
+
+        JLabel afpTrabajadorLabel = new JLabel("Afp:");
+        panel.add(afpTrabajadorLabel);
+        JComboBox<AFP> afpTrabajadorComboBox = new JComboBox<>(AFP.values());
+        panel.add(afpTrabajadorComboBox);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Actualizar trabajador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            long id = Long.parseLong(idTrabajadorField.getText());
+            String nombre = nombreTrabajadorField.getText();
+            String apellido = apellidoTrabajadorField.getText();
+            String rut = rutTrabajadorField.getText();
+            String isapre = ((Isapre) trabajadorIsapreComboBox.getSelectedItem()).name();
+            String afp = ((AFP) afpTrabajadorComboBox.getSelectedItem()).name();
+
+            try {
+                trabajadorController.actualizarTrabajador(id, nombre, apellido, rut, isapre, afp);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            loadTrabajadorTable();
         }
     }
 
-    private void crearTrabajador() {
-        System.out.print("Ingrese el nombre del trabajador: ");
-        String nombre = scanner.nextLine();
-        System.out.print("Ingrese el apellido del trabajador: ");
-        String apellido = scanner.nextLine();
-        System.out.print("Ingrese el rut del trabajador: ");
-        String rut = scanner.nextLine();
-        System.out.print("Ingrese la isapre del trabajador: ");
-        String isapre = scanner.nextLine();
-        System.out.print("Ingrese la AFP del trabajador: ");
-        String afp = scanner.nextLine();
-        try {
-            trabajadorController.crearTrabajador(nombre, apellido, rut, isapre, afp);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+    private void showDeleteTrabajadorDialog() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2));
+
+        JLabel idTrabajadorLabel = new JLabel("ID:");
+        panel.add(idTrabajadorLabel);
+        JTextField idTrabajadorField = new JTextField();
+        panel.add(idTrabajadorField);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Eliminar trabajador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            long id = Long.parseLong(idTrabajadorField.getText());
+
+            try {
+                trabajadorController.eliminarTrabajador(id);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            loadTrabajadorTable();
         }
     }
 
-    private void obtenerTrabajadorPorId() {
-        System.out.print("Ingrese el ID del trabajador: ");
-        int id = Integer.parseInt(scanner.nextLine());
-        try {
-            Trabajador trabajador = trabajadorController.obtenerTrabajador(id);
-            mostrarInformacionTrabajador(trabajador);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void obtenerTrabajadores() {
-        HashMap<Integer, Trabajador> trabajadores = trabajadorController.obtenerTrabajadores();
-        for (Map.Entry<Integer, Trabajador> entry : trabajadores.entrySet()) {
-            int id = entry.getKey();
-            Trabajador trabajador = entry.getValue();
-            System.out.println("ID: " + id);
-            mostrarInformacionTrabajador(trabajador);
-        }
-    }
-
-    private void actualizarTrabajador() {
-        System.out.print("Ingrese el ID del trabajador a actualizar: ");
-        int id = Integer.parseInt(scanner.nextLine());
-        System.out.print("Ingrese el nuevo nombre del trabajador: ");
-        String nombre = scanner.nextLine();
-        System.out.print("Ingrese el nuevo apellido del trabajador: ");
-        String apellido = scanner.nextLine();
-        System.out.print("Ingrese el nuevo rut del trabajador: ");
-        String rut = scanner.nextLine();
-        System.out.print("Ingrese la nueva isapre del trabajador: ");
-        String isapre = scanner.nextLine();
-        System.out.print("Ingrese la nueva AFP del trabajador: ");
-        String afp = scanner.nextLine();
-        try {
-            trabajadorController.actualizarTrabajador(id, nombre, apellido, rut, isapre, afp);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void eliminarTrabajador() {
-        System.out.print("Ingrese el ID del trabajador a eliminar: ");
-        int id = Integer.parseInt(scanner.nextLine());
-        try {
-            trabajadorController.eliminarTrabajador(id);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void mostrarInformacionTrabajador(Trabajador trabajador) {
-        System.out.println("Nombre: " + trabajador.getNombre());
-        System.out.println("Apellido: " + trabajador.getApellido());
-        System.out.println("Rut: " + trabajador.getRut());
-        System.out.println("Isapre: " + trabajador.getIsapre());
-        System.out.println("AFP: " + trabajador.getAfp());
+    private void loadTrabajadorTable() {
+        ArrayList<Trabajador> trabajadores = trabajadorController.obtenerTrabajadores();
+        trabajadorTableModel.setTrabajadores(trabajadores);
     }
 }

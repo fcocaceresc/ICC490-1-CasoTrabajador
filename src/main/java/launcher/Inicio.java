@@ -12,6 +12,6 @@ public class Inicio {
         TrabajadorService trabajadorService = new TrabajadorServiceImpl(trabajadorRepository);
         TrabajadorController trabajadorController = new TrabajadorController(trabajadorService);
         TrabajadorView trabajadorView = new TrabajadorView(trabajadorController);
-        trabajadorView.menu();
+        trabajadorView.setVisible(true);
     }
 }

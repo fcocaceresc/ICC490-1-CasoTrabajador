@@ -2,16 +2,16 @@ package controller;
 
 import model.Trabajador;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public interface TrabajadorService {
     void crearTrabajador(Trabajador trabajador);
 
-    Trabajador obtenerTrabajador(int id);
+    Trabajador obtenerTrabajador(long id);
 
-    HashMap<Integer, Trabajador> obtenerTrabajadores();
+    ArrayList<Trabajador> obtenerTrabajadores();
 
-    void actualizarTrabajador(int id, Trabajador trabajador);
+    void actualizarTrabajador(long id, Trabajador trabajador);
 
-    void eliminarTrabajador(int id);
+    void eliminarTrabajador(long id);
 }
