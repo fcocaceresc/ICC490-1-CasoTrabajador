@@ -30,9 +30,16 @@ public class TrabajadorView extends JFrame {
 
         panel.add(trabajadorScrollPane, BorderLayout.CENTER);
 
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1));
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
         JButton addTrabajadorButton = new JButton("Agregar trabajador");
         addTrabajadorButton.addActionListener(e -> showAddTrabajadorDialog());
-        panel.add(addTrabajadorButton, BorderLayout.SOUTH);
+        buttonPanel.add(addTrabajadorButton);
+
+        JButton updateTrabajadorButton = new JButton("Actualizar trabajador");
+        updateTrabajadorButton.addActionListener(e -> showUpdateTrabajadorDialog());
+        buttonPanel.add(updateTrabajadorButton);
 
         add(panel);
     }
@@ -76,6 +83,59 @@ public class TrabajadorView extends JFrame {
 
             try {
                 trabajadorController.crearTrabajador(nombre, apellido, rut, isapre, afp);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            loadTrabajadorTable();
+        }
+    }
+
+    private void showUpdateTrabajadorDialog() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 2));
+
+        JLabel idTrabajadorLabel = new JLabel("ID:");
+        panel.add(idTrabajadorLabel);
+        JTextField idTrabajadorField = new JTextField();
+        panel.add(idTrabajadorField);
+
+        JLabel nombreTrabajadorLabel = new JLabel("Nombre:");
+        panel.add(nombreTrabajadorLabel);
+        JTextField nombreTrabajadorField = new JTextField();
+        panel.add(nombreTrabajadorField);
+
+        JLabel apellidoTrabajadorLabel = new JLabel("Apellido:");
+        panel.add(apellidoTrabajadorLabel);
+        JTextField apellidoTrabajadorField = new JTextField();
+        panel.add(apellidoTrabajadorField);
+
+        JLabel rutTrabajadorLabel = new JLabel("Rut:");
+        panel.add(rutTrabajadorLabel);
+        JTextField rutTrabajadorField = new JTextField();
+        panel.add(rutTrabajadorField);
+
+        JLabel isapreTrabajadorLabel = new JLabel("Isapre:");
+        panel.add(isapreTrabajadorLabel);
+        JComboBox<Isapre> trabajadorIsapreComboBox = new JComboBox<>(Isapre.values());
+        panel.add(trabajadorIsapreComboBox);
+
+        JLabel afpTrabajadorLabel = new JLabel("Afp:");
+        panel.add(afpTrabajadorLabel);
+        JComboBox<AFP> afpTrabajadorComboBox = new JComboBox<>(AFP.values());
+        panel.add(afpTrabajadorComboBox);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Actualizar trabajador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            long id = Long.parseLong(idTrabajadorField.getText());
+            String nombre = nombreTrabajadorField.getText();
+            String apellido = apellidoTrabajadorField.getText();
+            String rut = rutTrabajadorField.getText();
+            String isapre = ((Isapre) trabajadorIsapreComboBox.getSelectedItem()).name();
+            String afp = ((AFP) afpTrabajadorComboBox.getSelectedItem()).name();
+
+            try {
+                trabajadorController.actualizarTrabajador(id, nombre, apellido, rut, isapre, afp);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
