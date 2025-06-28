@@ -4,7 +4,7 @@ import model.Trabajador;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,7 +64,7 @@ class TrabajadorControllerTest {
     void obtenerTrabajadores() {
         trabajadorController.crearTrabajador("amadeus", "salieri", "12345678-9", "Colmena", "UNO AFP");
         trabajadorController.crearTrabajador("balatro", "balatrez", "23456789-0", "Banmedica", "UNO AFP");
-        HashMap<Integer, Trabajador> trabajadores = trabajadorController.obtenerTrabajadores();
+        ArrayList<Trabajador> trabajadores = trabajadorController.obtenerTrabajadores();
         assertEquals(2, trabajadores.size());
     }
 

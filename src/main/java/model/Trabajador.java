@@ -4,6 +4,12 @@ public class Trabajador extends Persona {
     private String isapre;
     private String afp;
 
+    public Trabajador(long id, String nombre, String apellido, String rut, String isapre, String afp) {
+        super(id, nombre, apellido, rut);
+        this.isapre = isapre;
+        this.afp = afp;
+    }
+
     public Trabajador(String nombre, String apellido, String rut, String isapre, String afp) {
         super(nombre, apellido, rut);
         this.isapre = isapre;
